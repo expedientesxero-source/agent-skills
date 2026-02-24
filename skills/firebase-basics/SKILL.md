@@ -7,11 +7,11 @@ description: Guide for setting up and using Firebase. Use this skill when the us
 ### Node.js and npm
 To use the Firebase CLI, you need Node.js (version 20+ required) and npm (which comes with Node.js).
 
-**Recommended: Use a Node Version Manager (nvm)**
+**Recommended: Use a Node Version Manager**
 This avoids permission issues when installing global packages.
 
-1.  **Install nvm:**
-    - Mac/Linux: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash`
+1.  **Install a Node Version Manager:**
+    - Mac/Linux: Follow the installation instructions on the [official nvm repository](https://github.com/nvm-sh/nvm#installing-and-updating).
     - Windows: Download [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
 
 2.  **Install Node.js:**
