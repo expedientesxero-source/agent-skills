@@ -1,9 +1,10 @@
 ---
 name: firebase-basics
-description: Guide for setting up and using Firebase. Use this skill when the user is getting started with Firebase - setting up local environment, using Firebase for the first time, or adding Firebase to their app.
+description: This skill demonstrates the core principles of using Firebase with AI agents.
 ---
 ## Prerequisites
 
+<<<<<<< HEAD
 ### Node.js and npm
 To use the Firebase CLI, you need Node.js (version 20+ required) and npm (which comes with Node.js).
 
@@ -32,6 +33,13 @@ npx -y firebase-tools@latest --version
 
 ## Core Workflow
 
+=======
+Make sure you follow `firebase-getting-started` skill first. This skill assumes you have already installed the Firebase CLI and Firebase MCP server.
+
+## Core Workflow
+
+
+>>>>>>> 9b109d5 (separate getting-started into a different skill)
 ### 1. Authentication
 
 Log in to Firebase:
