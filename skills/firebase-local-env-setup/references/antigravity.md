@@ -4,21 +4,21 @@ To get the most out of Firebase in Antigravity, follow these steps to install th
 
 ## Recommended: Global Setup
 
-We recommend installing both the agent skills and the MCP server globally for consistent access across projects.
+The agent skills and MCP server should be installed globally for consistent access across projects.
 
 ### 1. Install Firebase Skills
-This provides the agent skills for working with Firebase.
+Run the following command to install the Firebase agent skills:
 ```bash
 npx skills add firebase/agent-skills --agent antigravity --all --global
 ```
 
 ### 2. Configure Firebase MCP Server
-The MCP server allows Antigravity to interact directly with your Firebase projects.
+The MCP server allows Antigravity to interact directly with Firebase projects.
 
-1. Find the `mcp_config.json` file in your system:
+1. Locate the `mcp_config.json` file in the system:
   - macOS / Linux: `~/.gemini/antigravity/mcp_config.json`  
   - Windows: `%USERPROFILE%\\.gemini\\antigravity\\mcp_config.json`
-2. Add the following to `mcpServers` section in `mcp_config.json`:
+2. Add the `firebase` object to the `mcpServers` section in `mcp_config.json`:
     ```json
     "firebase": {
       "command": "npx",
@@ -29,7 +29,7 @@ The MCP server allows Antigravity to interact directly with your Firebase projec
       ]
     }
     ```
-    For example, the `mcp_config.json` in your system might look like this:
+    For example, the `mcp_config.json` should look like this:
     ```json
     {
       "mcpServers": {
@@ -46,6 +46,7 @@ The MCP server allows Antigravity to interact directly with your Firebase projec
     ```
 
 ### 3. Verify and Restart
-1. Run `npx skills list` to verify the `firebase-basics` skill is present.
-2. Verify that the `firebase-tools` server is present in your `mcp_config.json`.
-3. Restart Antigravity and check the MCP server list in the UI to confirm `firebase-tools` is connected.
+Run the following checks to confirm installation:
+1. `npx skills list` -> Output should include `firebase-basics`.
+2. Open `mcp_config.json` -> Verify the `firebase` block is present.
+3. Instruct the user to restart Antigravity and check the MCP server list in the UI to confirm `firebase-tools` is connected.

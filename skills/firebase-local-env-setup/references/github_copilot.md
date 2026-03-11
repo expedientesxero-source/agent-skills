@@ -4,18 +4,19 @@ To get the most out of Firebase with GitHub Copilot in VS Code, follow these ste
 
 ## Recommended: Global Setup
 
-We recommend installing both the agent skills and the MCP server globally for consistent access across projects.
+The agent skills and MCP server should be installed globally for consistent access across projects.
 
 ### 1. Install Firebase Skills
-This provides the agent skills for working with Firebase.
+Run the following command to install the Firebase agent skills:
 ```bash
 npx skills add firebase/agent-skills --agent github-copilot --all --global
 ```
 
 ### 2. Configure Firebase MCP Server
-The MCP server allows GitHub Copilot to interact directly with your Firebase projects.
+The MCP server allows GitHub Copilot to interact directly with Firebase projects.
 
-1. Add the following to your workspace `.vscode/mcp.json` or your global User Settings:
+1. Locate the workspace `.vscode/mcp.json` or global User Settings `mcp.json` file.
+2. Add the following to the configuration:
     ```json
     "firebase": {
       "type": "stdio",
@@ -27,7 +28,7 @@ The MCP server allows GitHub Copilot to interact directly with your Firebase pro
       ]
     }
     ```
-    For example, `.vscode/mcp.json` might look like this:
+    For example, `.vscode/mcp.json` should look like this:
     ```json
     {
       "mcp": {
@@ -47,6 +48,7 @@ The MCP server allows GitHub Copilot to interact directly with your Firebase pro
     ```
 
 ### 3. Verify and Restart
-1. Run `npx skills list` to verify the `firebase-basics` skill is present.
-2. Verify that the `firebase-tools` server is present in your configurations.
-3. Restart VS Code and check the MCP server list in the UI to confirm `firebase-tools` is connected.
+Run the following checks to confirm installation:
+1. `npx skills list` -> Output should include `firebase-basics`.
+2. Open the `mcp.json` configuration -> Verify the `firebase` block is present.
+3. Instruct the user to restart VS Code and check the MCP server list in the UI to confirm `firebase-tools` is connected.

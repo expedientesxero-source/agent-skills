@@ -1,6 +1,6 @@
 ---
 name: firebase-basics
-description: This skill demonstrates the core principles of using Firebase with AI agents.
+description: This skill demonstrates the core principles and workflow of using Firebase with AI agents.
 ---
 ## Prerequisites
 

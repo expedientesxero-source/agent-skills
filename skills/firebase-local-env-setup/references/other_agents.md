@@ -4,18 +4,19 @@ If you use another agent (like Windsurf, Cline, or Claude Desktop), follow these
 
 ## Recommended: Global Setup
 
-We recommend installing both the agent skills and the MCP server globally for consistent access across projects.
+The agent skills and MCP server should be installed globally for consistent access across projects.
 
 ### 1. Install Firebase Skills
-This provides the agent skills for working with Firebase.
+Run the following command to install the Firebase agent skills:
 ```bash
 npx skills add firebase/agent-skills --all --global
 ```
 
 ### 2. Configure Firebase MCP Server
-The MCP server allows your agent to interact directly with your Firebase projects.
+The MCP server allows the agent to interact directly with Firebase projects.
 
-1. Add the following to your agent's MCP configuration file (e.g., `~/.codeium/windsurf/mcp_config.json`, `cline_mcp_settings.json`, or `claude_desktop_config.json`):
+1. Locate the agent's MCP configuration file (e.g., `~/.codeium/windsurf/mcp_config.json`, `cline_mcp_settings.json`, or `claude_desktop_config.json`).
+2. Add the following to the configuration:
     ```json
     "firebase": {
       "command": "npx",
@@ -26,7 +27,7 @@ The MCP server allows your agent to interact directly with your Firebase project
       ]
     }
     ```
-    For example, the configuration file might look like this:
+    For example, the configuration file should look like this:
     ```json
     {
       "mcpServers": {
@@ -43,6 +44,7 @@ The MCP server allows your agent to interact directly with your Firebase project
     ```
 
 ### 3. Verify and Restart
-1. Run `npx skills list` to verify the `firebase-basics` skill is present.
-2. Verify that the `firebase-tools` server is present in your configuration.
-3. Restart your agent and check the MCP server list in the UI to confirm `firebase-tools` is connected.
+Run the following checks to confirm installation:
+1. `npx skills list` -> Output should include `firebase-basics`.
+2. Open the configuration file -> Verify the `firebase` block is present.
+3. Instruct the user to restart the agent and check the MCP server list in the UI to confirm `firebase-tools` is connected.

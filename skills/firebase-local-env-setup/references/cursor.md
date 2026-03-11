@@ -4,18 +4,18 @@ To get the most out of Firebase in Cursor, follow these steps to install the age
 
 ## Recommended: Global Setup
 
-We recommend installing both the agent skills and the MCP server globally for consistent access across projects.
+The agent skills and MCP server should be installed globally for consistent access across projects.
 
 ### 1. Install Firebase Skills
-This provides the agent skills for working with Firebase.
+Run the following command to install the Firebase agent skills:
 ```bash
 npx skills add firebase/agent-skills --agent cursor --all --global
 ```
 
 ### 2. Configure Firebase MCP Server
-The MCP server allows Cursor to interact directly with your Firebase projects.
+The MCP server allows Cursor to interact directly with Firebase projects.
 
-1. Add the following to your `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
+1. Locate the `mcp.json` file. Add the following to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
     ```json
     "firebase": {
       "command": "npx",
@@ -26,7 +26,7 @@ The MCP server allows Cursor to interact directly with your Firebase projects.
       ]
     }
     ```
-    For example, the `mcp.json` in your system might look like this:
+    For example, the `mcp.json` should look like this:
     ```json
     {
       "mcpServers": {
@@ -43,6 +43,7 @@ The MCP server allows Cursor to interact directly with your Firebase projects.
     ```
 
 ### 3. Verify and Restart
-1. Run `npx skills list` to verify the `firebase-basics` skill is present.
-2. Verify that the `firebase-tools` server is present in your `mcp.json`.
-3. Restart Cursor and check the MCP server list in the UI to confirm `firebase-tools` is connected.
+Run the following checks to confirm installation:
+1. `npx skills list` -> Output should include `firebase-basics`.
+2. Open `mcp.json` -> Verify the `firebase` block is present.
+3. Instruct the user to restart Cursor and check the MCP server list in the UI to confirm `firebase-tools` is connected.

@@ -7,45 +7,31 @@ description: Bare minimum setup for getting started with Firebase for the agent.
 
 This skill documents the bare minimum setup required for a full Firebase experience for the agent. Before starting to use any Firebase features, you MUST verify that each of the following steps has been completed.
 
-## 1. Install Node.js
+## 1. Verify Node.js
 Firebase tools require Node.js version 20 or higher.
+- **Action**: Run `node --version`.
+- **Handling**: If Node.js is missing or `< v20`, instruct the user to install the latest LTS version of Node.js from [nodejs.org](https://nodejs.org/) or use a version manager like `nvm`. **Stop and wait** for the user to complete this before proceeding.
 
-**Verification:**
-Run `node --version`.
-
-**Action if missing or version < 20:**
-Install the latest LTS version of Node.js from [nodejs.org](https://nodejs.org/) or use a version manager like `nvm`.
-
-## 2. Ensure Firebase CLI is Available
+## 2. Verify Firebase CLI
 The Firebase CLI is the primary tool for interacting with Firebase services.
+- **Action**: Run `npx -y firebase-tools@latest --version`.
+- **Handling**: Ensure this command runs successfully and outputs a version number.
 
-**Verification & Setup:**
-Run the following command to ensure the latest version of the Firebase CLI is available via `npx`:
-```bash
-npx -y firebase-tools@latest --version
-```
+## 3. Verify Firebase Authentication
+You must be authenticated to manage Firebase projects.
+- **Action**: Run `npx -y firebase-tools@latest login`.
+- **Handling**: If the environment is remote or restricted (no browser access), run `npx -y firebase-tools@latest login --no-localhost` instead.
 
-## 3. Log In to Firebase
-You must authenticate with your Google account to manage Firebase projects.
+## 4. Install Agent Skills and MCP Server
+To fully manage Firebase, the agent needs specific skills and the Firebase MCP server installed. Identify the agent environment you are currently running in and follow the corresponding setup document strictly.
 
-**Verification:**
-Run `npx -y firebase-tools@latest login` to ensure you are logged in.
-
-*Note: If you are in a remote shell or a restricted environment where a browser cannot be opened, use `npx -y firebase-tools@latest login --no-localhost`.*
-
-## 4. Installing extension/plugin
-To get the most out of Firebase, you should install the Firebase agent skills and the Firebase MCP server. For many agents, this can be done through a single extension or plugin installation.
-
-Choose your agent for detailed setup instructions:
-- **Gemini CLI**: See [references/gemini_cli.md](references/gemini_cli.md)
-- **Antigravity**: See [references/antigravity.md](references/antigravity.md)
-- **Claude Code**: See [references/claude_code.md](references/claude_code.md)
-- **Cursor**: See [references/cursor.md](references/cursor.md)
-- **GitHub Copilot**: See [references/github_copilot.md](references/github_copilot.md)
-- **Other Agents**: (Windsurf, Cline, etc.) See [references/other_agents.md](references/other_agents.md)
-
-*Note: If both agent skills and MCP server can be installed through an extension or plugin, we recommend that method by default.*
+**Read the setup document for your current agent:**
+- **Gemini CLI**: Review [references/gemini_cli.md](references/gemini_cli.md)
+- **Antigravity**: Review [references/antigravity.md](references/antigravity.md)
+- **Claude Code**: Review [references/claude_code.md](references/claude_code.md)
+- **Cursor**: Review [references/cursor.md](references/cursor.md)
+- **GitHub Copilot**: Review [references/github_copilot.md](references/github_copilot.md)
+- **Other Agents** (Windsurf, Cline, etc.): Review [references/other_agents.md](references/other_agents.md)
 
 ---
-
-**Crucial:** Do not proceed with any other Firebase tasks until every step above has been verified and completed.
+**CRITICAL AGENT RULE:** Do NOT proceed with any other Firebase tasks until EVERY step above has been successfully verified and completed.
