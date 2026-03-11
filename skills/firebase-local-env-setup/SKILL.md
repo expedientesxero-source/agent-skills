@@ -8,9 +8,43 @@ description: Bare minimum setup for getting started with Firebase for the agent.
 This skill documents the bare minimum setup required for a full Firebase experience for the agent. Before starting to use any Firebase features, you MUST verify that each of the following steps has been completed.
 
 ## 1. Verify Node.js
-Firebase tools require Node.js version 20 or higher.
 - **Action**: Run `node --version`.
-- **Handling**: If Node.js is missing or `< v20`, instruct the user to install the latest LTS version of Node.js from [nodejs.org](https://nodejs.org/) or use a version manager like `nvm`. **Stop and wait** for the user to complete this before proceeding.
+- **Handling**: Ensure Node.js is installed and the version is `>= 24`. If Node.js is missing or `< v24`, install it based on the operating system:
+
+  **For macOS or Linux:**
+  We recommend using `nvm` (Node Version Manager):
+
+  1. Install `nvm`:
+     ```bash
+     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+     ```
+  2. Make `nvm` available in the current session. You normally need to restart the terminal or source one of the following configuration files based on the active shell:
+     ```bash
+     # For Bash Shell
+     source ~/.bash_profile
+     source ~/.bashrc
+
+     # For Zsh
+     source ~/.zprofile
+     source ~/.zshrc
+
+     # For non-bash or sh shells, often used on Debian-based systems
+     source ~/.profile
+     ```
+  3. Install Node.js 24:
+     ```bash
+     nvm install 24
+     nvm use 24
+     ```
+
+  **For Windows:**
+  1. Guide the user to the [download page](https://nodejs.org/en/download) or download the Windows packages [here](https://nodejs.org/download/release/latest-v24.x/).
+  2. Request the user to manually install Node.js and reply when finished. **Stop and wait** for the user's confirmation.
+  3. After the user confirms, check if Node.js is available using the following command:
+     ```bash
+     node --version
+     ```
+
 
 ## 2. Verify Firebase CLI
 The Firebase CLI is the primary tool for interacting with Firebase services.
