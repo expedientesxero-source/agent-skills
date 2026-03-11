@@ -1,34 +1,10 @@
 ---
 name: firebase-basics
-description: Guide for setting up and using Firebase. Use this skill when the user is getting started with Firebase - setting up local environment, using Firebase for the first time, or adding Firebase to their app.
+description: This skill demonstrates the core principles and workflow of using Firebase with AI agents.
 ---
 ## Prerequisites
 
-### Node.js and npm
-To use the Firebase CLI, you need Node.js (version 20+ required) and npm (which comes with Node.js).
-
-**Recommended: Use a Node Version Manager**
-This avoids permission issues when installing global packages.
-
-1.  **Install a Node Version Manager:**
-    - Mac/Linux: Follow the installation instructions on the [official nvm repository](https://github.com/nvm-sh/nvm#installing-and-updating).
-    - Windows: Download [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
-
-2.  **Install Node.js:**
-    ```bash
-    nvm install 24
-    nvm use 24
-    ```
-
-**Alternative: Official Installer**
-Download and install the LTS version from [nodejs.org](https://nodejs.org/).
-
-**Verify Installation:**
-```bash
-node --version
-npm --version
-npx -y firebase-tools@latest --version
-```
+Make sure you follow `firebase-local-env-setup` skill first. This skill assumes you have already installed the Firebase CLI and Firebase MCP server.
 
 ## Core Workflow
 
