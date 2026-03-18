@@ -1,6 +1,6 @@
 ---
 name: firebase-basics
-description: Core principles and workflow for using Firebase. Make sure to ALWAYS use this skill whenever you are trying to use the Firebase CLI (`firebase`), build with Firebase, setup Firebase services, or use Firebase in any project, even if the user doesn't explicitly ask for Firebase basics.
+description: Core principles and workflow for using Firebase. Make sure to ALWAYS use this skill whenever you are trying to use the Firebase CLI (`firebase`), build with Firebase, set up Firebase services, or use Firebase in any project, even if the user doesn't explicitly ask for Firebase basics.
 ---
 # Prerequisites
 
