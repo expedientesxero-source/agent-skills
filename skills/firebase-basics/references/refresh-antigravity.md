@@ -4,11 +4,11 @@ Follow these steps to refresh Antigravity's local environment, ensuring that the
 
 Antigravity relies on `npx skills`. Updates should prioritize the global level; if skills are installed at the project level, omit the `--global` flag.
 
-1. **Check for New Skills:** The `update` command only updates existing skills. To see if new skills have been added to the repository, run:
+1. **Check for New Skills:** Check all available skills in the repository, run:
    ```bash
    npx -y skills add firebase/agent-skills --list
    ```
-2. **Check if Skills are Already Installed:** The `update` command only updates existing skills. To see if new skills have been added to the repository, run:
+2. **Check the installed skills:** Check installed skills in both project and global levels, run:
    ```bash
    npx -y skills list --agent antigravity
    npx -y skills list --agent antigravity --global
