@@ -60,10 +60,10 @@ git clone https://github.com/firebase/skills.git
 The `skills` CLI also supports installing skills from a local directory. If you have cloned this repository, you can add skills by pointing the CLI to your local folder:
 
 ```bash
-npx skills add /path/to/your/local/firebase-skills
+npx skills add /path/to/your/local/firebase-skills/skills
 ```
 
-If you make changes to the local skills repository and want to update your project with the new changes, you can restore them by running:
+If you make changes to the local skills repository and want to update your project with the new changes, you can update them by running:
 
 ```bash
 npx skills experimental_install
