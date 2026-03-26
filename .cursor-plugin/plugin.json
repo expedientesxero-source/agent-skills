@@ -24,7 +24,5 @@
   ],
   "logo": "../assets/firebase_logo.svg",
   "homepage": "https://github.com/firebase/agent-skills",
-  "repository": "https://github.com/firebase/agent-skills",
-  "skills": "../skills/",
-  "mcpServers": "../claude-plugins/firebase/.mcp.json"
+  "repository": "https://github.com/firebase/agent-skills"
 }
