@@ -171,6 +171,18 @@ function areImmutableFieldsUnchanged(fields) {
   return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
 }
 //
+// Check if user is an admin (using custom claims)
+function isAdmin() {
+  return isAuthenticated() && request.auth.token.admin == true;
+}
+//
+// Validate that a timestamp is recent (within the last 5 minutes)
+function isRecent(time) {
+  return time is timestamp &&
+         time > request.time - duration.value(5, 'm') &&
+         time <= request.time;
+}
+//
 // [Add more helper functions as needed for the data validation like the example below]
 //
 // ===============================================================
@@ -239,7 +251,7 @@ match /users/{userId} {
 - **Date and Timestamp Validation:**
     - **Prefer Timestamps:** ALWAYS prefer the `timestamp` type for date fields. Firestore automatically ensures they are logically valid dates.
     - **String Date Risks:** If using strings for dates (e.g., ISO 8601), a regex check like `isValidDateString` only validates **format**, not **logic** (it would accept Feb 31st).
-    - **Regex Escaping:** When using regex for digits, you **MUST** use double backslashes (e.g., `\\d`) in the rules string. Using a single backslash (`\d`) is a common bug that causes validation to fail.
+    - **Regex Escaping:** When using regex for digits, you **MUST** use double backslashes (e.g., `\\\\d`) in the rules string. Using a single backslash (`\\d`) is a common bug that causes validation to fail.
 - **Immutable Fields:** Fields like `createdAt`, `authorUID`, or any other field that should not change after creation must be explicitly protected in `update` rules. (e.g., `request.resource.data.createdAt == resource.data.createdAt`). **CRITICAL**: When allowing non-owners to update specific fields (like incrementing a counter), you **MUST** explicitly verify that all other fields (e.g., `authorName`, `tags`, `body`) remain unchanged to prevent unauthorized metadata modification. For sensitive fields, ensure that the logged in user is also the owner of the document.
 - **Identity Integrity:** When storing denormalized user identity (e.g. `authorName`, `authorPhoto`), you **MUST** validate this data.
     - **Prefer Auth Token:** If possible, check if `request.resource.data.authorName == request.auth.token.name`.
@@ -365,23 +377,23 @@ Structure your rules clearly with comments explaining each rule's purpose.
 2.  **Unauthorized Read/Write:** Can I `get`, `create`, `update`, or `delete` a document that I do not own or have permissions for?
 3.  **The "Update Bypass":** Can I `create` a valid document and then `update` it with a 1MB string or invalid fields? (Tests if validation logic is missing from `update`).
 4.  **Ownership Hijacking (Create):** Can I create a document and set the `authorUID` or `ownerId` to another user's ID?
-4.  **Ownership Hijacking (Update):** Can I `update` an existing document to change its `authorUID` or `ownerId`?
-5.  **Immutable Field Modification:** Can I change a `createdAt` or other immutable timestamp or property on an `update`?
-6.  **Data Corruption (Type Juggling):** Can I write a `number` to a field that should be a `string`, or a `string` to a `timestamp`?
-7.  **Validation Bypass (Create vs. Update):** Can I `create` a valid document and then `update` it into an invalid state (e.g., remove a required field, write a string that's too long)?
-8.  **Resource Exhaustion / DoS:** Can I write an enormous string (e.g., 1MB) to any field that accepts a string or a massive array to a list field? Every string field (e.g., `bio`, `url`, `name`) MUST have a `.size()` check. If any are missing, it's a "Resource Exhaustion/DoS" risk.
-9.  **Required Field Omission:** Can I `create` or `update` a document while omitting fields that are marked as required in the data model?
-10. **Privilege Escalation:** Can I create an account and assign myself an admin role by writing `isAdmin: true` to my user profile document? (Tests reliance on document data vs. custom claims).
-11. **Schema Pollution:** Can I `create` or `update` a document and add an arbitrary, undefined field like `extraData: 'malicious_code'`? (Tests for strict schema enforcement).
-12. **Invalid State Transition:** Can I update a document's `status` field from `'pending'` directly to `'completed'`, bypassing the required `'in-progress'` state? (Tests business logic enforcement).
-13. **Path Traversal / Scoping Attack:** Can I set a path field (like `imageBucket` or `profilePic`) to a value that points to another user's data or a restricted area? (Tests for regex path scoping).
-14. **Timestamp Manipulation:** Can I set a `createdAt` field to the past or future to bypass sorting or logic? (Tests for `request.time` validation).
-15. **Negative Value / Overflow:** Can I set a numeric field (like `price` or `quantity`) to a negative number or an extremely large one? (Tests for range validation).
-16. **The "Mixed Content" Leak:** Create a second user. Can User B read User A's users document? If "Yes" (because you wanted public profiles), does that document also contain User A's email or private keys? If both are true, the rules are insecure.
-17. **Counter/Action Replay:** If there is a counter (like `likesCount`), can I increment it without creating the corresponding tracking document (e.g., inside `likes/{userId}`)? Can I increment it twice? (Tests for `getAfter()` consistency checks).
-18. **Orphaned Subcollection Access:** Can I read/write to a subcollection (e.g., `users/123/posts/456`) if the parent document (`users/123`) does not exist? (Tests for parent existence checks).
-19. **Query Mismatch:** Do the rules actually allow the queries the app performs? (e.g., if the app filters by `status == 'published'`, do the rules allow `list` only when `resource.data.status == 'published'`?)
-20. **Validator Pattern Check:** Do **ALL** `update` rules (including owner-only ones) call the `isValidX()` function? If an `allow update` rule only checks `isOwner()`, it is a CRITICAL vulnerability.
+5.  **Ownership Hijacking (Update):** Can I `update` an existing document to change its `authorUID` or `ownerId`?
+6.  **Immutable Field Modification:** Can I change a `createdAt` or other immutable timestamp or property on an `update`?
+7.  **Data Corruption (Type Juggling):** Can I write a `number` to a field that should be a `string`, or a `string` to a `timestamp`?
+8.  **Validation Bypass (Create vs. Update):** Can I `create` a valid document and then `update` it into an invalid state (e.g., remove a required field, write a string that's too long)?
+9.  **Resource Exhaustion / DoS:** Can I write an enormous string (e.g., 1MB) to any field that accepts a string or a massive array to a list field? Every string field (e.g., `bio`, `url`, `name`) MUST have a `.size()` check. If any are missing, it's a "Resource Exhaustion/DoS" risk.
+10. **Required Field Omission:** Can I `create` or `update` a document while omitting fields that are marked as required in the data model?
+11. **Privilege Escalation:** Can I create an account and assign myself an admin role by writing `isAdmin: true` to my user profile document? (Tests reliance on document data vs. custom claims).
+12. **Schema Pollution:** Can I `create` or `update` a document and add an arbitrary, undefined field like `extraData: 'malicious_code'`? (Tests for strict schema enforcement).
+13. **Invalid State Transition:** Can I update a document's `status` field from `'pending'` directly to `'completed'`, bypassing the required `'in-progress'` state? (Tests business logic enforcement).
+14. **Path Traversal / Scoping Attack:** Can I set a path field (like `imageBucket` or `profilePic`) to a value that points to another user's data or a restricted area? (Tests for regex path scoping).
+15. **Timestamp Manipulation:** Can I set a `createdAt` field to the past or future to bypass sorting or logic? (Tests for `request.time` validation).
+16. **Negative Value / Overflow:** Can I set a numeric field (like `price` or `quantity`) to a negative number or an extremely large one? (Tests for range validation).
+17. **The "Mixed Content" Leak:** Create a second user. Can User B read User A's users document? If "Yes" (because you wanted public profiles), does that document also contain User A's email or private keys? If both are true, the rules are insecure.
+18. **Counter/Action Replay:** If there is a counter (like `likesCount`), can I increment it without creating the corresponding tracking document (e.g., inside `likes/{userId}`)? Can I increment it twice? (Tests for `getAfter()` consistency checks).
+19. **Orphaned Subcollection Access:** Can I read/write to a subcollection (e.g., `users/123/posts/456`) if the parent document (`users/123`) does not exist? (Tests for parent existence checks).
+20. **Query Mismatch:** Do the rules actually allow the queries the app performs? (e.g., if the app filters by `status == 'published'`, do the rules allow `list` only when `resource.data.status == 'published'`?)
+21. **Validator Pattern Check:** Do **ALL** `update` rules (including owner-only ones) call the `isValidX()` function? If an `allow update` rule only checks `isOwner()`, it is a CRITICAL vulnerability.
 
 Document each attack attempt and whether it succeeded. If ANY attack succeeds:
 
@@ -399,7 +411,7 @@ Once devil's advocate testing passes, repeat until rules pass validation.
 1.  **Never skip the devil's advocate phase** - this is your primary security validation
 2.  **MUST include helper functions** for common operations ('isAuthenticated', 'isOwner', 'uidUnchanged', 'uidNotModified') AND domain validators ('isValidUser', etc.)
 3.  **MUST document assumed data models** at the beginning of the rules file
-4.  **Always use firebase_validate_security_rules** before outputting the final file.
+4.  **Always use `firebase deploy --only firestore:rules --dry-run`** to validate rules syntax.
 5.  **Provide complete, runnable code** - no placeholders or TODOs
 6.  **Document all assumptions** about data structure or access patterns
 7. **Always run the devil's advocate attack** after any modification of the rules.
