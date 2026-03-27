@@ -1,7 +1,10 @@
 # Firebase Firestore iOS Setup Guide
 
 ## 1. Import and Initialize
-Ensure you have installed the `FirebaseFirestore` SDK via Swift Package Manager.
+Ensure you have installed the `FirebaseFirestore` SDK. Use the `xcode-project-setup` skill to automate adding the SPM dependency to the Xcode project.
+
+> **⚠️ CRITICAL DEPENDENCY WARNING:**
+> Do NOT attempt to link against or add a product named `FirebaseFirestoreSwift`. As of modern Firebase SDKs (v11+), all Swift-specific features (like `@DocumentID` and `Codable` support) have been fully merged into the main `FirebaseFirestore` module. You only need `FirebaseFirestore`.
 
 ```swift
 import FirebaseFirestore

@@ -1,7 +1,9 @@
 # Firebase Auth iOS Setup Guide
 
 ## 1. Import and Initialize
-Ensure you have installed the `FirebaseAuth` SDK via Swift Package Manager.
+Ensure you have installed the `FirebaseAuth` SDK. Use the `firebase-xcode-setup` skill to automate adding the SPM dependency to the Xcode project.
+
+> **Note:** Ensure `FirebaseApp.configure()` has been executed in your app's entry point before calling any `Auth.auth()` methods, otherwise your app will crash. Do not initialize Auth objects in SwiftUI `@State` properties at the App root level.
 
 ```swift
 import FirebaseAuth

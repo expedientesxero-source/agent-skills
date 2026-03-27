@@ -1,22 +1,18 @@
 # Firebase iOS Setup Guide
 
-## 1. Create a Firebase Project and App
-If you haven't already created a project:
+## 1. Create a Firebase Project and App (Automated)
+Do not use the Firebase Console. Use the CLI to automate setup:
 
-```bash
-firebase projects:create
-```
+1. Create the project: `npx -y firebase-tools@latest projects:create`
+2. Register the iOS app: `npx -y firebase-tools@latest apps:create IOS <bundle-id>`
+3. Fetch the config: `npx -y firebase-tools@latest apps:sdkconfig IOS <App-ID>`
+4. Save the output as `GoogleService-Info.plist` in your Xcode project folder. Ensure you remove any non-XML CLI output headers.
 
-Register your iOS app in the Firebase Console and download the `GoogleService-Info.plist` file. Add this file to the root of your Xcode project, ensuring it's included in your app's target.
+## 2. Installation (Automated via Swift Package Manager CLI)
+Do not use raw text parsing, sed, or Ruby scripts (like `xcodeproj` gem) to modify `.pbxproj` files directly.
 
-## 2. Installation
-Add the Firebase SDK to your iOS project using Swift Package Manager.
-
-1. Open your project in Xcode.
-2. Go to **File > Add Package Dependencies...**
-3. Enter the repository URL `https://github.com/firebase/firebase-ios-sdk`.
-4. Choose the version you want to use and add the package to your project.
-5. Select the specific Firebase products you need, such as `FirebaseCore`, `FirebaseAuth`, and `FirebaseFirestore`.
+Instead, use the **`xcode-project-setup`** skill. 
+Load that skill using your tools to securely execute its native Swift package setup script. That skill handles installing the required SPM packages and safely linking the `GoogleService-Info.plist` file.
 
 ## 3. Initialization
 Configure the shared `FirebaseApp` instance. You can do this either in a modern SwiftUI `App` structure or a traditional `AppDelegate`.
@@ -39,6 +35,9 @@ struct YourApp: App {
   }
 }
 ```
+> **⚠️ CRITICAL SWIFTUI INITIALIZATION WARNING:**
+> Never initialize Firebase-dependent objects (like an `AuthViewModel` or `Firestore` service) using `@State`, `@StateObject`, or global variables at the root `App` struct level. Property initializers run *before* the `init()` method where `FirebaseApp.configure()` is called, causing an immediate fatal crash. 
+> Always instantiate these view models further down the view hierarchy (e.g., inside `ContentView`).
 
 ### AppDelegate (Traditional / UIKit)
 ```swift
