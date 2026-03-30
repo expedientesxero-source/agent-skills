@@ -84,3 +84,175 @@ export default async function MenuPage() {
   );
 }
 ```
+
+## 4. Realtime Database (RTDB)
+
+Realtime Database snapshots are natively JSON-serializable, making them straightforward to pass to Client Components without complex mappings.
+
+```tsx
+// app/rtdb/page.tsx (Server Component)
+import { getDatabase, ref, get } from "firebase/database";
+import ClientComponent from './ClientComponent';
+
+export default async function RealtimeDataPage() {
+  const { app } = await setupFirebaseSSR();
+  const db = getDatabase(app);
+  
+  const snapshot = await get(ref(db, "leaderboard"));
+  const data = snapshot.val(); // Fully serializable JSON
+
+  return <ClientComponent leaderboardData={data} />;
+}
+```
+
+## 5. Cloud Storage for Firebase
+
+You can securely retrieve download URLs for Storage objects on the server leveraging the user's isolated context.
+
+```tsx
+// app/storage/page.tsx (Server Component)
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import Image from "next/image";
+
+export default async function StorageImagePage() {
+  const { app } = await setupFirebaseSSR();
+  const storage = getStorage(app);
+  
+  const fileRef = ref(storage, "users/me/avatar.png");
+  const url = await getDownloadURL(fileRef);
+
+  return <Image src={url} alt="User Avatar" width={100} height={100} />;
+}
+```
+
+## 6. Cloud Functions
+
+You can securely invoke Firebase HTTP Callable functions natively on the server before rendering the UI.
+
+```tsx
+// app/functions/page.tsx (Server Component)
+import { getFunctions, httpsCallable } from "firebase/functions";
+import ClientComponent from './ClientComponent';
+
+export default async function FunctionsPage() {
+  const { app } = await setupFirebaseSSR();
+  const functions = getFunctions(app);
+  
+  const createSubscription = httpsCallable(functions, 'createSubscription');
+  const result = await createSubscription({ plan: "premium" });
+
+  return <ClientComponent subscriptionResult={result.data} />;
+}
+```
+
+## 7. Resuming Server Context in the Client
+
+To avoid client-side layout shifts and redundant network requests, resume the server-initialized Firebase state within your Next.js Client Components.
+
+### Firebase Auth Hydration
+Instead of rendering a blank loading screen while `onAuthStateChanged` resolves, pass the decoded user state (from your session cookie or `headers()`) down as a prop to your React context.
+
+```tsx
+// app/ClientAuthProvider.tsx (Client Component)
+"use client";
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { app } from "./firebaseClient"; // standard initializeApp setup
+
+export function ClientAuthProvider({ initialUser, children }: { initialUser: User | null, children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(initialUser);
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    return onAuthStateChanged(auth, setUser);
+  }, []);
+
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+}
+```
+
+### Firestore `onSnapshotResume`
+To instantly render streaming Firestore data without a second network trip, use the Firebase JS SDK v10+ `onSnapshotResume` API.
+
+```tsx
+// app/page.tsx (Server Component)
+import { getFirestore, collection, getDocs, query } from "firebase/firestore";
+
+export default async function Page() {
+  const { app } = await setupFirebaseSSR();
+  const db = getFirestore(app);
+  
+  const q = query(collection(db, "posts"));
+  const snapshot = await getDocs(q);
+
+  // Pass the internal .toJSON() representation of the snapshot to the client
+  return <PostList serializedSnapshot={snapshot.toJSON()} />;
+}
+```
+
+```tsx
+// app/PostList.tsx (Client Component)
+"use client";
+import { useEffect, useState } from "react";
+import { getFirestore, onSnapshotResume } from "firebase/firestore";
+import { app } from "./firebaseClient";
+
+export default function PostList({ serializedSnapshot }: { serializedSnapshot: object }) {
+  const [docs, setDocs] = useState([]);
+
+  useEffect(() => {
+    const db = getFirestore(app);
+    
+    // Resume the listener from the server's snapshot state seamlessly
+    const unsubscribe = onSnapshotResume(db, serializedSnapshot, (snapshot) => {
+      setDocs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return unsubscribe;
+  }, [serializedSnapshot]);
+
+  return <div>{docs.map(d => <div key={d.id}>{d.title}</div>)}</div>;
+}
+```
+
+### Data Connect `subscribe` Resumption
+Firebase Data Connect's JS SDK uses a similar architecture to `onSnapshotResume` to hydrate client-side watches from server results. You can pass the serialized representation of the query result directly into the generated `subscribe` function.
+
+```tsx
+// app/movies/page.tsx (Server Component)
+import { listMovies } from '@movie-app/dataconnect';
+
+export default async function MoviesPage() {
+  await setupFirebaseSSR(); // Request-isolated app injection
+  
+  const result = await listMovies(); // Internal QueryResult object
+  
+  // Pass the internal .toJSON() SerializedRef representation to the client
+  return <MoviesList serializedQuery={result.toJSON()} />;
+}
+```
+
+```tsx
+// app/movies/MoviesList.tsx (Client Component)
+"use client";
+import { useEffect, useState } from "react";
+import { subscribe, SerializedRef } from 'firebase/data-connect';
+import { ListMoviesData, ListMoviesVariables } from '@movie-app/dataconnect';
+
+export default function MoviesList({ serializedQuery }: { serializedQuery: SerializedRef<ListMoviesData, ListMoviesVariables> }) {
+  // Use the extracted raw data as your initial state for 0 layout shift
+  const [movies, setMovies] = useState(serializedQuery.data.movies);
+
+  useEffect(() => {
+    // Resume the subscription utilizing the serialized reference state
+    // Without recreating the query context from scratch
+    const unsubscribe = subscribe(serializedQuery, {
+      onNext: (res) => setMovies(res.data.movies)
+    });
+
+    return unsubscribe;
+  }, [serializedQuery]);
+
+  return <div>{movies.map(m => <div key={m.id}>{m.title}</div>)}</div>;
+}
+```

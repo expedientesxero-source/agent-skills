@@ -55,3 +55,18 @@ Always map over fetched Firestore documents to extract and convert these specifi
 Unlike Firestore, Firebase Data Connect utilizes standard GraphQL over its protocol. Responses to generated query functions are immediately returned as perfectly serializable JSON primitives.
 
 Data fetched via Data Connect Server SDKs (`executeGraphql` or generated SDKs like `@firebasegen/default-connector`) does not require manual conversion of structures before being passed as page props or signals.
+
+### 4. Other Firebase Products (RTDB, Storage, Functions)
+
+The `initializeServerApp` pattern is not limited to Firestore; you can safely initialize the client SDKs for Realtime Database, Cloud Storage, and Cloud Functions on the server. Because the app instance is authenticated via `authIdToken`, these calls will securely interact with Firebase infrastructure using the requesting user's identity.
+- **Realtime Database**: Data returned from `get(ref(db, 'path'))` is already primitively structured (JSON serializable).
+- **Cloud Storage**: You can safely fetch download URLs utilizing `getDownloadURL(ref(storage, 'path'))` on the server.
+- **Cloud Functions**: You can securely execute callable functions using `httpsCallable(functions, 'name')(data)` on the server on behalf of the user.
+
+### 5. Resuming Server Context in the Client
+
+Once you have initialized the server app and fetched data, it is a best-practice to seamlessly "resume" this state in the CSR (Client-Side Rendering) environment without generating a layout shift or making redundant network requests:
+
+- **Firebase Auth Hydration**: Instead of rendering a blank or unauthenticated state while `onAuthStateChanged` initializes the client Firebase Auth SDK, pass the parsed user data (obtained from the decoded session cookie) as an initial property (e.g. `initialUser` prop in React, or via `TransferState` in Angular) to your client-side Auth Provider.
+- **Firestore `onSnapshotResume`**: In Firebase JS v10+, if you initiate a Firestore query on the server (using `getDocs()` or `getDoc()`), you can pass the `.toJSON()` representation of that snapshot to the client. The client can then call `onSnapshotResume(db, serializedSnapshot, ...)` to immediately resume the listener from the server's state, preventing the client from re-downloading the initial snapshot.
+- **Data Connect `subscribe`**: When executing generated queries on the server (e.g., `listMovies()`), the returned result object exposes a `.toJSON()` function. By passing this serialized representation to the client, you can hydrate initial UI state and supply it directly into the generated `subscribe(serializedQuery, ...)` function to resume watching for cache updates without re-triggering the initial query.
