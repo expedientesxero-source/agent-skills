@@ -164,18 +164,3 @@ struct MyView: View {
 }
 ```
 
-Then, in your SwiftUI View, simply `await` the function. The `.task(id:)` inherently manages the cancellation:
-
-```swift
-// CORRECT
-.task(id: authManager.userId) {
-    if let userId = authManager.userId {
-        // The task suspends here, keeping the listener alive.
-        // When the view disappears or the ID changes, SwiftUI cancels the task,
-        // which triggers the cleanup in the view model.
-        await manager.startListening(for: userId)
-    } else {
-        manager.stopListening()
-    }
-}
-```
