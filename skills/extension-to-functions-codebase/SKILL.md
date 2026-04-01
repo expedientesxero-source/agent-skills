@@ -22,15 +22,30 @@ If there are any tests in the extensions codebase, be sure to run them after the
 ## Rules and Constraints
 
 ### Verify you are ready for the task
-If an extensions codebase has a feature that you do not know how to handle yet, such as
-lifecycle hooks or specific IAM roles via `lifecycleEvents` or `iamRoles` in `extension.yaml`, stop and tell the user that you cannot handle this task yet.
+If an extensions codebase has a feature that you do not know how to handle 
+yet, such as lifecycle hooks or specific IAM roles via `iamRoles` in
+`extension.yaml`, stop and tell the user that you cannot handle this task 
+yet.  Let them decide whether or not to continue.
+
+### Avoid contention
+When possible, avoid using the `firebase` cli, or firebase MCP server to avoid global contention. Try
+to inspect `extension.yaml` and code manually.
+
+## Getting started
+Make sure the git history is clean before proceeding because this skill uses commits.
+
+The user may do one of two things: ask you to convert extensions code in-place or ask you to creeate a new copy of the
+extensions code. If they do the former, and the destination is in the same directory as the source, use git cp of the
+code to the new location and commit with the message "Copying [extension] extension to [directory] in preparation for rewrite".
+
+## Steps
 
 ### API Enablement
 For all API dependencies listed in `extension.yaml`, add a comment to index.js and inform the user in your final response to manually enable them.
 
 ```typescript
 // APIs to enable: 
-// - 
+// - vision.googleapis.com 
 ```
 
 ### Parameterization
