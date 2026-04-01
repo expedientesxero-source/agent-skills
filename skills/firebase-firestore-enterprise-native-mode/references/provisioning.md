@@ -34,8 +34,6 @@ firebase firestore:databases:create my-database-id \
 
 ### 2. Create `firebase.json`
 
-Run `npx -y firebase-tools@latest init firestore` to create `firebase.json` with firestore configuration you defined in step 1.
-
 Create a file named `firebase.json` in your project root with the following content. If this file already exists, instead append to the existing JSON:
 
 ```json
