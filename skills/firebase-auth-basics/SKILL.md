@@ -1,12 +1,12 @@
 ---
 name: firebase-auth-basics
 description: Guide for setting up and using Firebase Authentication. Use this skill when the user's app requires user sign-in, user management, or secure data access using auth rules.
-compatibility: This skill is best used with the Firebase CLI, but does not require it. Install it by running `npm install -g firebase-tools`.
+compatibility: This skill is best used with the Firebase CLI, but does not require it. Firebase CLI can be accessed through `npx -y firebase-tools@latest`.
 ---
 
 ## Prerequisites
 
-- **Firebase Project**: Created via `firebase projects:create` (see `firebase-basics`).
+- **Firebase Project**: Created via `npx -y firebase-tools@latest projects:create` (see `firebase-basics`).
 - **Firebase CLI**: Installed and logged in (see `firebase-basics`).
 
 ## Core Concepts
