@@ -1,8 +1,8 @@
-# Firestore Web SDK Usage Guide
+# Web SDK Usage
 
 This guide focuses on the **Modular Web SDK** (v9+), which is tree-shakeable and efficient.
 
-## Initialization
+### Initialization
 
 ```javascript
 import { initializeApp } from "firebase/app";
@@ -17,13 +17,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 ```
 
-## Writing Data
+### Writing Data
 
-### Set a Document (`setDoc`)
-Creates a document if it doesn't exist, or overwrites it if it does.
+#### Set a Document
+Creates a document if it doesn't exist, or overwrites it if it does. You can also specify a merge option to only update provided fields.
 
 ```javascript
 import { doc, setDoc } from "firebase/firestore"; 
@@ -39,8 +38,8 @@ await setDoc(doc(db, "cities", "LA"), {
 await setDoc(doc(db, "cities", "LA"), { population: 3900000 }, { merge: true });
 ```
 
-### Add a Document with Auto-ID (`addDoc`)
-Use when you don't care about the document ID.
+#### Add a Document with Auto-ID
+Use when you don't care about the document ID and want Firestore to automatically generate one.
 
 ```javascript
 import { collection, addDoc } from "firebase/firestore"; 
@@ -52,7 +51,7 @@ const docRef = await addDoc(collection(db, "cities"), {
 console.log("Document written with ID: ", docRef.id);
 ```
 
-### Update a Document (`updateDoc`)
+#### Update a Document
 Update some fields of an existing document without overwriting the entire document. Fails if the document doesn't exist.
 
 ```javascript
@@ -65,7 +64,7 @@ await updateDoc(laRef, {
 });
 ```
 
-### Transactions
+#### Transactions
 Perform an atomic read-modify-write operation.
 
 ```javascript
@@ -89,9 +88,9 @@ try {
 }
 ```
 
-## Reading Data
+### Reading Data
 
-### Get a Single Document (`getDoc`)
+#### Get a Single Document
 
 ```javascript
 import { doc, getDoc } from "firebase/firestore";
@@ -106,7 +105,7 @@ if (docSnap.exists()) {
 }
 ```
 
-### Get Multiple Documents (`getDocs`)
+#### Get Multiple Documents
 Fetches all documents in a query or collection once.
 
 ```javascript
@@ -114,14 +113,13 @@ import { collection, getDocs } from "firebase/firestore";
 
 const querySnapshot = await getDocs(collection(db, "cities"));
 querySnapshot.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
   console.log(doc.id, " => ", doc.data());
 });
 ```
 
-## Realtime Updates
+### Realtime Updates
 
-### Listen to a Document/Query (`onSnapshot`)
+#### Listen to a Document or Query
 
 ```javascript
 import { doc, onSnapshot } from "firebase/firestore";
@@ -130,11 +128,11 @@ const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
     console.log("Current data: ", doc.data());
 });
 
-// Stop listening
+// To stop listening: 
 // unsub();
 ```
 
-### Handle Changes (Added/Modified/Removed)
+### Handle Changes
 
 ```javascript
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -155,10 +153,10 @@ const unsubscribe = onSnapshot(q, (snapshot) => {
 });
 ```
 
-## Queries
+### Queries
 
-### Simple and Compound Queries
-Use `query()` to combine filters.
+#### Simple and Compound Queries
+Use `query()` and `where()` to combine filters safely.
 
 ```javascript
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -169,15 +167,35 @@ const citiesRef = collection(db, "cities");
 const q1 = query(citiesRef, where("state", "==", "CA"));
 
 // Compound (AND)
-// Note: Requires an index if filtering on different fields
+// Note: Requires a composite index if filtering on different fields
 const q2 = query(citiesRef, where("state", "==", "CA"), where("population", ">", 1000000));
 ```
 
-### Order and Limit
-Sort and limit results.
+#### Order and Limit
+Sort and limit results cleanly.
 
 ```javascript
 import { orderBy, limit } from "firebase/firestore";
 
 const q = query(citiesRef, orderBy("name"), limit(3));
+```
+
+#### Pipeline Queries
+
+You can use pipeline queries to perform complex queries.
+
+```javascript
+
+const readDataPipeline = db.pipeline()
+  .collection("users");
+
+// Execute the pipeline and handle the result
+try {
+  const querySnapshot = await execute(readDataPipeline);
+  querySnapshot.results.forEach((result) => {
+    console.log(`${result.id} => ${result.data()}`);
+  });
+} catch (error) {
+    console.error("Error getting documents: ", error);
+}
 ```

@@ -32,15 +32,15 @@ The library is part of the standard Firebase Web SDK.
 
 If you're in a firebase directory (with a firebase.json) the currently selected project will be marked with "current" using this command:  
 
-`firebase projects:list`
+`npx -y firebase-tools@latest projects:list`
 
 Ensure there's at least one app associated with the current project 
 
-`firebase apps:list`
+`npx -y firebase-tools@latest apps:list`
 
 Initialize AI logic SDK with the init command
 
-`firebase init # Choose AI logic`
+`npx -y firebase-tools@latest init # Choose AI logic`
 
 This will automatically enable the Gemini Developer API in the Firebase console.
 
@@ -64,7 +64,7 @@ To improve the user experience by showing partial results as they arrive (like a
 
 ### Generate Images with Nano Banana
 
-- Start with Gemini for most use cases, and choose Imagen for specialized tasks where image quality and specific styles are critical. (gemini-2.5-flash-image)
+- Start with Gemini for most use cases, and choose Imagen for specialized tasks where image quality and specific styles are critical. (Example: gemini-2.5-flash-image)
 - Requires an upgraded Blaze pay-as-you-go billing plan.
 
 ### Search Grounding with the built in googleSearch tool
@@ -91,7 +91,7 @@ Recommended: The developer must enable Firebase App Check to prevent unauthorize
 
 ### Remote Config
 
-Consider that you do not need to hardcode model names (e.g., `gemini-2.5-flash-lite`). Use Firebase Remote Config to update model versions dynamically without deploying new client code.  See [Changing model names remotely](https://firebase.google.com/docs/ai-logic/change-model-name-remotely.md.txt) 
+Consider that you do not need to hardcode model names (e.g., `gemini-flash-lite-latest`). Use Firebase Remote Config to update model versions dynamically without deploying new client code.  See [Changing model names remotely](https://firebase.google.com/docs/ai-logic/change-model-name-remotely.md.txt) 
 
 ## Initialization Code References
 
@@ -99,7 +99,7 @@ Consider that you do not need to hardcode model names (e.g., `gemini-2.5-flash-l
 | :---- | :---- | :---- |
 | Web Modular API | Gemini Developer API (Developer API) | firebase://docs/ai-logic/get-started  |
 
-**Always use gemini-2.5-flash or gemini-3-flash-preview unless another model is requested by the docs or the user. DO NOT USE gemini 1.5 flash**
+**Always use the most recent version of Gemini (gemini-flash-latest) unless another model is requested by the docs or the user. DO NOT USE gemini-1.5-flash**
 
 ## References
 
