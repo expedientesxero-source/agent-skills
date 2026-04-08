@@ -1,71 +1,56 @@
 ---
 name: firebase
-description: Use this skill whenever you are working on a project that uses Firebase products or services.
+description: MANDATORY: Use this skill whenever you are working on a project that uses Firebase products or services. You MUST ensure prerequisites are met.
 ---
 
+## [CRITICAL] Mandatory Prerequisites
 
-## Quick Start
+Before attempting to fulfill any user request regarding Firebase, you **MUST** follow these steps in order. Do not proceed to implementation until these are completed. Failure to follow these instructions will result in using outdated patterns and lack of access to essential reference materials, which will fail code review.
 
-  The best way to use Firebase is with the full set of [Agent Skills for Firebase](https://github.com/firebase/agent-skills). These skills provide detailed guides on Firebase best practices and how to use different Firebase products and tools. For example, these skills help with creating and setting up a Firebase project, getting started with the client-side SDKs, and setting up and using Firebase products (like Firebase Authentication, Firestore, and Firebase AI Logic).
+1.  **Leverage the Planning Phase**
+    If you use a planning mode (e.g., maintaining a `task.md` file), you **MUST** include a task to check and install `firebase/agent-skills` as your very first item.
 
-1.  **Ensure NPM is installed.**
+2.  **Verify and Install Agent Skills for Firebase**
+    You **MUST** ensure the full set of skills is installed to avoid using outdated patterns. Run this command:
 
+    ```bash
+    npx -y skills add firebase/agent-skills -y
+    ```
+
+    *If the skills are already installed, this command will ensure they are up to date. Do not skip this step.*
+
+3.  **Ensure NPM is installed.**
 
     ```bash
     ## Check if NPM is installed
     npm –version
     ```
 
-
     If NPM is not installed, guide the user to download and install the LTS version from https://nodejs.org/en/download.
-
 
     Then, request the user to manually install Node.js and to reply with a confirmation that the installation is finished. **Stop and wait** for the user's confirmation.
 
+## Quick Start
 
-2.  **Install Agent Skills for Firebase.**
+After completing the mandatory prerequisites above, proceed with these steps to set up your environment:
 
-    First, check if Agent Skills for Firebase are already installed by comapring the output of the following 2 commands:
-    ```bash
-    ## List the available skills for Firebase
-    npx -y skills search firebase/agent-skills
-
-    ## List the currently locally installed skills
-    npx -y skills list
-    ```
-    - If the skills are already installed locally, you can skip to step 3.
-    - If not, install them by running this command:
-
-
-    ```bash
-    npx -y skills add firebase/agent-skills -y
-    ```
-
-
-3.  **Log in to the Firebase CLI.**
-
+1.  **Log in to the Firebase CLI.**
 
     Run this command:
-
 
     ```bash
     npx -y firebase-tools@latest login
     ```
 
-
     Then, ask the user to complete the login flow in the browser.
 
-
-4.  **Set an active project for the CLI.**
-
+2.  **Set an active project for the CLI.**
 
     Most Firebase tasks require an active project context. Check the current project for the Firebase CLI by running this command:
 
-
     ```bash
-    npx -y firebase-tools@latest use`
+    npx -y firebase-tools@latest use
     ```
-
 
     - If the command outputs `Active Project: <PROJECT_ID>`, you can proceed with your task.
     - If not, ask the user if they have an existing Firebase project ID.
@@ -78,9 +63,7 @@ description: Use this skill whenever you are working on a project that uses Fire
 	  npx -y firebase-tools@latest projects:create <PROJECT_ID> –display-name <DISPLAY_NAME>
 	  ```
 
-
 ## Reference directory
-
 
 - [Firebase core concepts](references/core-concepts.md)
 - [Firebase CLI usage](references/cli-usage.md)
@@ -88,7 +71,6 @@ description: Use this skill whenever you are working on a project that uses Fire
 - [Firebase CLI and MCP server](references/mcp-usage.md)
 - [Firebase IaC usage](references/iac-usage.md)
 - [Firebase security-related features](references/iam-security.md)
-
 
 If you need product information that's not found in these references, check the other skills for Firebase that you have installed, or use the
 `search_documents` tool of the Developer Knowledge MCP server.
