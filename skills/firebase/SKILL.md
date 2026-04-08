@@ -1,11 +1,11 @@
 ---
 name: firebase
-description: MANDATORY: Use this skill whenever you are working on a project that uses Firebase products or services. You MUST ensure prerequisites are met.
+description: Use this skill whenever you are working on a project that uses Firebase products or services.
 ---
 
 ## [CRITICAL] Mandatory Prerequisites
 
-Before attempting to fulfill any user request regarding Firebase, you **MUST** follow these steps in order. Do not proceed to implementation until these are completed. Failure to follow these instructions will result in using outdated patterns and lack of access to essential reference materials, which will fail code review.
+Before attempting to fulfill any user request regarding Firebase, you **MUST** follow these steps in order. Do not proceed to implementation until these are completed. Failure to follow these instructions may result in using outdated patterns and lack of access to essential reference materials.
 
 1.  **Leverage the Planning Phase**
     If you use a planning mode (e.g., maintaining a `task.md` file), you **MUST** include a task to check and install `firebase/agent-skills` as your very first item.
