@@ -4,6 +4,8 @@ description: The definitive, foundational skill for ANY Firebase task. Make sure
 ---
 # Prerequisites
 
+Foo #DO_NOT_SUBMIT
+
 Please complete these setup steps before proceeding, and remember your progress to avoid repeating them in future interactions.
 
 1. **Local Environment Setup:** Verify the environment is properly set up so we can use Firebase tools:
