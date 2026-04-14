@@ -1,5 +1,7 @@
 # Refresh Antigravity Local Environment
 
+foo DO NOT SUBMIT
+
 Follow these steps to refresh Antigravity's local environment, ensuring that their agent skills and plugins are fully up-to-date.
 
 Antigravity relies on `npx skills`. Updates should prioritize the global level; if skills are installed at the project level, omit the `--global` flag.

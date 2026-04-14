@@ -1,4 +1,5 @@
 # Exploring Commands
+foo DO NOT SUBMIT
 
 The Firebase CLI documents itself. Use help commands to discover functionality.
 
