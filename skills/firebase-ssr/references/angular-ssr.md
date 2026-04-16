@@ -49,26 +49,60 @@ export class FirebaseSSRService {
 When bridging server state over to the client browser via Angular `TransferState` or Signals, complex instances (`Timestamp` and `GeoPoint`) must be mapped to primitive JS types.
 
 ```typescript
-// auth.service.ts
-import { TransferState, makeStateKey } from '@angular/core';
+// user.service.ts
+import { Injectable, TransferState, makeStateKey, PLATFORM_ID, Inject, signal } from '@angular/core';
+import { isServer } from '@angular/common';
+import { doc, getDoc, Firestore } from 'firebase/firestore';
 
-import { User } from 'firebase/auth';
-const USER_DATA_KEY = makeStateKey<User | null>('user_data_SSR');
+interface UserData { id: string; name: string; createdAt: string; updatedAt: string; }
+const USER_DATA_KEY = makeStateKey<UserData | null>('user_data_SSR');
 
-// In your Server Service resolving FireStore data
-const docSnap = await getDoc(doc(db, "users", "123"));
-const data = docSnap.data();
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  // Initialize signal synchronously with the server-transferred state (if available)
+  readonly userData = signal<UserData | null>(
+    this.transferState.get(USER_DATA_KEY, null)
+  );
 
-if (data) {
-  // Convert Firestore types to serialization-friendly primitives
-  const serializableData = {
-    ...data,
-    createdAt: data.createdAt?.toDate().toISOString(),
-    updatedAt: data.updatedAt?.toDate().toISOString(),
-  };
+  constructor(
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private db: Firestore // Assume provided or fetched via service
+  ) {}
 
-  // Safe to transfer!
-  this.transferState.set(USER_DATA_KEY, serializableData);
+  async fetchUser(userId: string) {
+    if (isServer(this.platformId)) {
+      // Server: Fetch data and serialize
+      const docSnap = await getDoc(doc(this.db, "users", userId));
+      const data = docSnap.data();
+
+      if (data) {
+        // Convert Firestore types to serialization-friendly primitives
+        const serializableData = {
+          ...data,
+          createdAt: data.createdAt?.toDate().toISOString(),
+          updatedAt: data.updatedAt?.toDate().toISOString(),
+        } as UserData;
+
+        // Safe to transfer!
+        this.transferState.set(USER_DATA_KEY, serializableData);
+        this.userData.set(serializableData);
+      }
+    } else {
+      // Client: If not found in TransferState (e.g., direct client navigation), fetch it
+      if (!this.userData()) {
+        const docSnap = await getDoc(doc(this.db, "users", userId));
+        const data = docSnap.data();
+        if (data) {
+          this.userData.set({
+            ...data,
+            createdAt: data.createdAt?.toDate().toISOString(),
+            updatedAt: data.updatedAt?.toDate().toISOString(),
+          } as UserData);
+        }
+      }
+    }
+  }
 }
 ```
 
