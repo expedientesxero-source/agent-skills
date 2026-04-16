@@ -2,6 +2,9 @@
 
 When building with Next.js App Router, utilize React Server Components (RSCs) alongside `initializeServerApp` to securely extract and pass data.
 
+## Cache Components
+Currently, cached components are not supported. If the user is using Next.js v16, ensure that the `cacheComponents` is set to `false` in `next.config.ts`.
+
 ## 1. Initializing the Server App
 
 Use the standard Next.js `headers()` or `cookies()` APIs to retrieve tokens for Firebase Auth without accessing the Express request object.
