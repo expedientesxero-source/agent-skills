@@ -1,5 +1,10 @@
 # Firebase Crashlytics iOS Setup Guide
 
+Important references:
+
+- Refer to the `firebase-basics` skills, particularly those for iOS setup, before proceeding.
+- Refer to the `xcode-project-setup` skills.
+
 ## 1. Automated Project and App Setup
 
 Use the `firebase-tools` CLI to set up the project if necessary.
@@ -9,13 +14,11 @@ Use the `firebase-tools` CLI to set up the project if necessary.
     `npx -y firebase-tools@latest projects:create <project-id> --display-name="My Awesome App"`
 3.  **Create Firebase App:** Register the iOS app with the discovered bundle ID:
     `npx -y firebase-tools@latest apps:create IOS <bundle-id>`
-4.  **Download Config File:** Fetch the `GoogleService-Info.plist` file:
-    `npx -y firebase-tools@latest apps:sdkconfig IOS <app-id>`
-5.  **Save and Link Config File:** Save the output as `GoogleService-Info.plist` at the root of the Xcode project directory. The agent must ensure this file is linked to the main application target in Xcode.
+4.  **Link the GoogleService-Info.plist file:** Use the script in the `xcode-project-setup` skill to obtain the config and link.
 
 ## 2. Add Swift Package Dependencies
 
-Install the SDK using the Swift packages manager.
+Install the SDK using the Swift packages manager, or the script in the `xcode-project-setup` skill.
 
 The following packages are required from the `https://github.com/firebase/firebase-ios-sdk.git` repository:
 - `FirebaseCrashlytics`
@@ -23,62 +26,7 @@ The following packages are required from the `https://github.com/firebase/fireba
 
 ## 3. Initialize Firebase in App Code
 
-Modify the application's entry point to initialize Firebase.
-
-### For SwiftUI Apps (`App.swift`)
-
-Ensure `FirebaseApp.configure()` is called. The safest pattern is to use an `AppDelegate`.
-
-1.  **Ensure `AppDelegate` is used:**
-
-    *File: `YourApp.swift`*
-    ```swift
-    import SwiftUI
-    import FirebaseCore
-
-    @main
-    struct YourApp: App {
-      @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
-      var body: some Scene {
-        WindowGroup {
-          ContentView()
-        }
-      }
-    }
-    ```
-
-2.  **Configure Firebase in `AppDelegate.swift`:**
-
-    *File: `AppDelegate.swift`*
-    ```swift
-    import UIKit
-    import FirebaseCore
-
-    class AppDelegate: NSObject, UIApplicationDelegate {
-      func application(_ application: UIApplication,
-                       didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
-        return true
-      }
-    }
-    ```
-
-### For UIKit Apps (`AppDelegate.swift`)
-
-*File: `AppDelegate.swift`*
-```swift
-import UIKit
-import FirebaseCore
-
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
-}
-```
+Modify the application's entry point to initialize Firebase. Refer to the iOS setup reference in the `firebase-basics` skill.
 
 ## 4. Add dSYM Upload Script
 

@@ -28,7 +28,7 @@ The SDK provides a number of features to make crash reports more actionable.
 * Set user identifiers
 * Report non-fatal exceptions
 
-To learn how to customize crash reports and add additional debugging data, consult the documentaion for your platform.
+To learn how to customize crash reports and add additional debugging data, consult the documentation for your platform.
 
 *   **Android**: [Customize Crash Reports for Android](https://firebase.google.com/docs/crashlytics/android/customize-crash-reports)
 *   **iOS**: [Customize Crash Reports for Apple Platforms](https://firebase.google.com/docs/crashlytics/ios/customize-crash-reports)
