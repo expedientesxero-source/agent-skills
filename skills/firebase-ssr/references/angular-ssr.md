@@ -8,7 +8,7 @@ Access the underlying Express `Request` object injected via the `REQUEST` token 
 
 ```typescript
 import { Injectable, Inject, Optional } from '@angular/core';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { REQUEST } from '@angular/ssr';
 import { Request } from 'express';
 import { initializeServerApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
