@@ -14,9 +14,9 @@ The core concepts of Firebase SSR (request isolation and serialization mappings)
 **Step 1:** Identify the SSR framework the user is building with.
 
 **Step 2:** Read the appropriate framework-specific reference guide before attempting to implement Firebase integration.
-- `[references/nextjs.md](file:///Users/mtewani/source/agent-skills/skills/firebase-ssr/references/nextjs.md)` - For Next.js App Router (RSCs, Route Handlers).
-- `[references/remix.md](file:///Users/mtewani/source/agent-skills/skills/firebase-ssr/references/remix.md)` - For Remix (`loader` / `action` functions).
-- `[references/angular-ssr.md](file:///Users/mtewani/source/agent-skills/skills/firebase-ssr/references/angular-ssr.md)` - For Angular Universal/SSR (`REQUEST` token and `TransferState`).
+- `[references/nextjs.md](./references/nextjs.md)` - For Next.js App Router (RSCs, Route Handlers).
+- `[references/remix.md](./references/remix.md)` - For Remix (`loader` / `action` functions).
+- `[references/angular-ssr.md](./references/angular-ssr.md)` - For Angular Universal/SSR (`REQUEST` token and `TransferState`).
 
 *Note: If the user's framework is not explicitly listed (e.g., SvelteKit, Nuxt), read `nextjs.md` mentally translating Next-specific concepts (like `headers()`) to the equivalent request handling method corresponding to their actual framework.*
 
