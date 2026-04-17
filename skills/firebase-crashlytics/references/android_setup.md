@@ -1,8 +1,10 @@
 # Firebase Crashlytics Android Setup Guide
 
-This guide provides instructions for installing and initializing the Firebase Crashlytics SDK in an Android application.
+Important references:
 
-## 1. Prerequisites
+- Refer to the `firebase-basics` skills, particularly those for project and app setup, before proceeding.
+
+## Project and App Setup
 
 Before you begin, ensure you have the following. If a `google-services.json` file is present, then use that Firebase project and app. Otherwise you may need to create them.
 
@@ -10,7 +12,9 @@ Before you begin, ensure you have the following. If a `google-services.json` fil
 - **Firebase Project**: Created via `npx -y firebase-tools@latest projects:create` (see `firebase-basics`).
 - **Firebase App**: Created via `npx -y firebase-tools@latest apps:create <IOS|ANDROID|WEB> <package-name-or-bundle-id>`
 
-## 2. Add Dependencies to Gradle Build
+The `google-services.json` file must be present in the Android app's module directory. If missing, get the config using the Firebase CLI: `npx -y firebase-tools@latest apps:sdkconfig ANDROID <App-ID>`.
+
+## Add Dependencies to Gradle Build
 
 These changes are made to your Android project's Gradle files.
 
@@ -50,17 +54,14 @@ plugins {
     }
     ```
 
-## 3. Find google-services.json
 
-The `google-services.json` file must be present in the Android app's module directory. If missing, get the config using the Firebase CLI: `npx -y firebase-tools@latest apps:sdkconfig ANDROID <App-ID>`
-
-## 4. Follow up Steps
+## Follow up Steps
 
 The following optional steps are recommended, but don't necessarily apply to all projects.
 
 ### Optional: Link with Google Analytics
 
-Integrating Firebase Crashlytics with Google Analytics provides a more comprehensive view of your app's stability and user behavior. When linked, Crashlytics can log Analytics events leading up to a crash, helping you understand the user's journey and actions that might have preceded the issue. Analytics is also requires to measure crash-free users and crash-free sessions.
+Integrating Firebase Crashlytics with Google Analytics provides a more comprehensive view of your app's stability and user behavior. When linked, Crashlytics can log Analytics events leading up to a crash, helping you understand the user's journey and actions that might have preceded the issue. Analytics is also required to measure crash-free users and crash-free sessions.
 
 Add the `firebase-analytics-ktx` dependency:
 
@@ -123,10 +124,14 @@ To verify that Crashlytics is correctly installed, you can force a test crash.
     ```
 
 2.  Run your app on a device or emulator. The app should crash after a short delay.
+
 3.  Restart the app. The Crashlytics SDK will send the crash report to Firebase on the next app launch.
-4.  Go to the Crashlytics dashboard in the Firebase console to see the new crash report. This may take a few minutes to appear.
+
+4.  After a few minutes, the crash should be available in Crashlytics.
+  -  If the Firebase MCP server is installed, use the `get_report` tool to check that a crash was received.
+  -  As a fallback, visit the Crashlytics dashboard in the Firebase console to see the new crash report.
 
 ### Optional: Add custom debugging information
 
-Customize reports to help you better understand what's happening in your app and the circumstances around events reported to Crashlytics. See [android_usage.md](android_usage.md) for references.
+Customize reports to help you better understand what's happening in your app and the circumstances around events reported to Crashlytics. See [Customize Crash Reports for Android](https://firebase.google.com/docs/crashlytics/android/customize-crash-reports).
 

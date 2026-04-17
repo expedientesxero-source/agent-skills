@@ -5,7 +5,7 @@ Important references:
 - Refer to the `firebase-basics` skills, particularly those for iOS setup, before proceeding.
 - Refer to the `xcode-project-setup` skills.
 
-## 1. Automated Project and App Setup
+## Project and App Setup
 
 Use the `firebase-tools` CLI to set up the project if necessary.
 
@@ -16,19 +16,17 @@ Use the `firebase-tools` CLI to set up the project if necessary.
     `npx -y firebase-tools@latest apps:create IOS <bundle-id>`
 4.  **Link the GoogleService-Info.plist file:** Use the script in the `xcode-project-setup` skill to obtain the config and link.
 
-## 2. Add Swift Package Dependencies
+## Add Swift Package Dependencies
 
-Install the SDK using the Swift packages manager, or the script in the `xcode-project-setup` skill.
+Install the Crashlytics SDK using the Swift package manager, or the script in the `xcode-project-setup` skill.
 
-The following packages are required from the `https://github.com/firebase/firebase-ios-sdk.git` repository:
-- `FirebaseCrashlytics`
-- `FirebaseAnalytics`
+Install the `FirebaseCrashlytics` package from the `https://github.com/firebase/firebase-ios-sdk.git` repository.
 
-## 3. Initialize Firebase in App Code
+## Initialize Firebase in App Code
 
 Modify the application's entry point to initialize Firebase. Refer to the iOS setup reference in the `firebase-basics` skill.
 
-## 4. Add dSYM Upload Script
+## Add dSYM Upload Script
 
 Add a Run Script phase to the main app target in Xcode. This step is required to upload dSYM files for crash symbolication. 
 
@@ -38,11 +36,25 @@ Add a Run Script phase to the main app target in Xcode. This step is required to
     ${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run
     ```
 
-## 5. Force a Test Crash
+## Follow up Steps
 
-**Action:** Add code to trigger a crash a few seconds after app startup to verify Crashlytics setup.
+The following optional steps are recommended, but don't necessarily apply to all projects.
 
-1.  **For SwiftUI Apps (in `AppDelegate.swift`):**
+### Optional: Link with Google Analytics
+
+Integrating Firebase Crashlytics with Google Analytics provides a more comprehensive view of your app's stability and user behavior. When linked, Crashlytics can log Analytics events leading up to a crash, helping you understand the user's journey and actions that might have preceded the issue. Analytics is also required to measure crash-free users and crash-free sessions.
+
+Install the Google Analytics for Firebase SDK using the Swift packages manager, or the script in the `xcode-project-setup` skill.
+
+Install the `FirebaseAnalytics` package from the `https://github.com/firebase/firebase-ios-sdk.git` repository.
+
+Enabling Google Analytics in your Firebase project is necessary for this integration to function correctly. 
+
+### Optional: Force a Test Crash
+
+1. Add code to trigger a crash a few seconds after app startup to verify Crashlytics setup.
+
+**For SwiftUI Apps (in `AppDelegate.swift`):**
 
     *File: `AppDelegate.swift`*
     ```swift
@@ -64,4 +76,14 @@ Add a Run Script phase to the main app target in Xcode. This step is required to
     }
     ```
 
-After adding the code, build and run your app. It should crash after approximately 3 seconds. Restart the app. The Crashlytics SDK will send the crash report to Firebase on the next app launch. The report will appear in the Firebase console after a few minutes.
+2.  Run your app on a device or emulator. The app should crash after a short delay.
+
+3.  Restart the app. The Crashlytics SDK will send the crash report to Firebase on the next app launch.
+
+4.  After a few minutes, the crash should be available in Crashlytics.
+  -  If the Firebase MCP server is installed, use the `get_report` tool to check that a crash was received.
+  -  As a fallback, visit the Crashlytics dashboard in the Firebase console to see the new crash report.
+
+### Optional: Add custom debugging information
+
+Customize reports to help you better understand what's happening in your app and the circumstances around events reported to Crashlytics. See [Customize Crash Reports for Apple Platforms](https://firebase.google.com/docs/crashlytics/ios/customize-crash-reports).
